@@ -1,0 +1,465 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Luyện phân tích nhân tử</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Patrick+Hand&family=STIX+Two+Text:wght@400;500;600&display=swap">
+<style>
+/* Layout: vở ô li — one column of exercises on grid paper; student answers in purple ink, grades in the teacher's red pen. */
+:root{
+  --paper:#f6f8fc; --surface:#ffffff; --grid:rgba(70,110,190,.07); --grid-strong:rgba(70,110,190,.13);
+  --ink:#1d2433; --muted:#5d6577; --line:#d9dfea;
+  --violet:#5b3fa8; --violet-soft:#ece7fa;
+  --red:#cf2e2a; --red-soft:#fbe9e7;
+  --green:#257a4a; --green-soft:#e3f3e9;
+  --chip:#eef1f7;
+  --f-body:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-math:"STIX Two Text", "Cambria Math", Cambria, "Times New Roman", serif;
+  --f-hand:"Patrick Hand", "Comic Sans MS", "Chalkboard SE", cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#13161e; --surface:#1b1f2a; --grid:rgba(140,160,220,.05); --grid-strong:rgba(140,160,220,.09);
+  --ink:#e7e9f0; --muted:#9aa2b4; --line:#2e3443;
+  --violet:#b8a4ff; --violet-soft:#2a2442;
+  --red:#ff6f62; --red-soft:#3a1f1e;
+  --green:#5fcf8e; --green-soft:#183326;
+  --chip:#232836; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#13161e; --surface:#1b1f2a; --grid:rgba(140,160,220,.05); --grid-strong:rgba(140,160,220,.09);
+  --ink:#e7e9f0; --muted:#9aa2b4; --line:#2e3443;
+  --violet:#b8a4ff; --violet-soft:#2a2442;
+  --red:#ff6f62; --red-soft:#3a1f1e;
+  --green:#5fcf8e; --green-soft:#183326;
+  --chip:#232836; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:48px 48px,48px 48px,12px 12px,12px 12px;
+  color:var(--ink); font-family:var(--f-body); font-size:15px; line-height:1.55;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{padding-block:10px 0}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.brand small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.total{font-family:var(--f-hand);color:var(--red);font-size:26px;line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums;
+  border:2px solid var(--red);border-radius:50%;padding:8px 12px 6px;transform:rotate(-4deg)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--chip);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:500;display:flex;gap:6px;align-items:center;text-decoration:none;color:var(--ink)}
+.tab .p{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px}
+.tab.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tab.on .p{color:var(--surface);opacity:.75}
+.tab.full .p{color:var(--green)}
+.tab.on.full .p{color:var(--surface)}
+
+main.wrap{padding-block:20px 64px}
+.sec-head h2{margin:0 0 4px;font-size:22px;line-height:1.25;letter-spacing:-.015em;text-wrap:balance}
+.sec-meta{color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums}
+.rule{margin:14px 0 6px;background:var(--violet-soft);border-radius:10px;padding:12px 14px;font-size:14.5px}
+.rule b{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);margin-bottom:2px}
+.level{margin-top:28px}
+.level-h{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.level-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.dots{letter-spacing:2px;color:var(--violet)}
+
+/* item */
+.item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 10px;padding-block:18px;border-bottom:1px dashed var(--line)}
+.num{font-family:var(--f-hand);font-size:26px;color:var(--muted);line-height:1;padding-top:2px;font-variant-numeric:tabular-nums}
+.num small{display:block;font-family:var(--f-body);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.mark{font-family:var(--f-hand);font-size:22px;line-height:1;display:block;margin-top:4px}
+.mark.ok{color:var(--green)} .mark.no{color:var(--red)}
+.body{min-width:0}
+.ask{color:var(--muted);font-size:13px;margin-bottom:2px}
+.badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:1px}
+.math{font-family:var(--f-math);font-size:19px;line-height:1.5;overflow-wrap:anywhere}
+.expr{margin-bottom:10px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:8px}
+.opt{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;display:flex;gap:10px;align-items:baseline;min-height:46px}
+.opt .k{font-size:12px;font-weight:600;color:var(--muted);flex:0 0 auto}
+.opt .math{font-size:17.5px}
+.opt:not(:disabled):hover{border-color:var(--violet)}
+.opt:disabled{cursor:default}
+.opt.picked{border-color:var(--violet);background:var(--violet-soft)}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.text{font-size:14.5px}
+
+.fillrow{display:flex;flex-wrap:wrap;align-items:center;gap:3px;font-family:var(--f-math);font-size:20px;line-height:2}
+.blank{width:3.2em;height:38px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--violet);
+  font-family:var(--f-math);font-size:19px;text-align:center;font-weight:600;padding:0}
+.sign{width:38px;height:38px;border:1.5px dashed var(--violet);border-radius:8px;background:var(--surface);color:var(--violet);font-family:var(--f-math);font-size:22px;font-weight:600;line-height:1;padding:0}
+.sign.empty{color:var(--muted)}
+.blank.right,.sign.right{border-color:var(--green);border-style:solid;color:var(--green)}
+.blank.wrong,.sign.wrong{border-color:var(--red);border-style:solid;color:var(--red)}
+.roots{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.roots label{display:flex;align-items:center;gap:6px;font-family:var(--f-math);font-size:18px}
+.roots .blank{width:5.2em}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.btn{border:0;background:var(--ink);color:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600;font-size:14px}
+.btn.ghost{background:transparent;color:var(--violet);border:1px solid var(--violet)}
+.btn:disabled{opacity:.4;cursor:default}
+.tip{font-size:13px;color:var(--muted)}
+
+.steps{display:flex;flex-direction:column;gap:6px}
+.step{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline}
+.step .k{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.step .math{font-size:17.5px}
+.step.txt .math{font-family:var(--f-body);font-size:14.5px}
+.step:not(:disabled):hover{border-color:var(--violet)}
+.step:disabled{cursor:default}
+.step.right{border-color:var(--green);background:var(--green-soft)}
+.step.wrong{border-color:var(--red);background:var(--red-soft)}
+.step.truth{border-color:var(--red);border-style:dashed}
+.fixq{margin:12px 0 8px;font-size:14px;font-weight:600}
+
+.fb{margin-top:12px;border-left:3px solid var(--red);padding:6px 0 6px 12px;font-size:14.5px}
+.fb.ok{border-color:var(--green)}
+.fb .v{font-family:var(--f-hand);font-size:20px;line-height:1.1;color:var(--red);margin-bottom:2px}
+.fb.ok .v{color:var(--green)}
+.fb .why{margin-bottom:4px}
+.fb .sol{color:var(--muted)}
+.fb .sol b{color:var(--ink);font-weight:600}
+.fb .err{display:inline-block;margin-top:4px;font-size:12px;color:var(--red);background:var(--red-soft);border-radius:4px;padding:1px 6px}
+
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:28px;flex-wrap:wrap}
+.pager a{color:var(--violet);font-weight:600;text-decoration:none;padding:8px 0}
+.reset{margin-top:20px}
+
+/* results */
+.res-top{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin:16px 0 8px}
+.big{font-family:var(--f-hand);color:var(--red);font-size:54px;line-height:1;border:3px solid var(--red);border-radius:50%;padding:18px 22px 12px;transform:rotate(-5deg);font-variant-numeric:tabular-nums}
+.res-top p{margin:0;max-width:44ch}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto;margin-top:8px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td a{color:var(--ink);font-weight:600;text-decoration:none}
+.bar{height:8px;border-radius:4px;background:var(--chip);overflow:hidden;min-width:80px}
+.bar i{display:block;height:100%;background:var(--green)}
+h3{font-size:16px;margin:30px 0 4px}
+.errs{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:10px}
+.errs li{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:start}
+.errs .c{font-family:var(--f-hand);font-size:26px;color:var(--red);line-height:1;text-align:right}
+.errs .l{font-weight:600}
+.errs .w{font-size:13px;color:var(--muted)}
+.errs .w a{color:var(--violet)}
+.empty{color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Luyện phân tích đa thức thành nhân tử<small>Toán 8 · ôn kiểm tra cuối học kì I</small></h1>
+      <div class="total" id="total" aria-label="Tổng điểm">0/0</div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Chọn dạng bài"></nav>
+  </div>
+</header>
+<main class="wrap" id="main"></main>
+
+<script type="application/json" id="bank">{"sections": [{"id": "k", "short": "Khởi động", "title": "Khởi động: bẫy dấu", "rule": "Dấu trừ trước ngoặc → đổi dấu TẤT CẢ hạng tử trong ngoặc. y − x = −(x − y). Bình phương mất dấu trừ, lập phương giữ dấu trừ.", "levels": [{"name": "Bẫy dấu", "items": [{"type": "mc", "p": "Bỏ ngoặc: −(3x − 2y + 5)", "ok": "−3x + 2y − 5", "wrong": [["−3x − 2y + 5", "ngoac", "Chỉ đổi dấu hạng tử đầu tiên. Phải đổi dấu cả −2y và +5."], ["−3x − 2y − 5", "ngoac", "−2y đổi dấu phải thành +2y."], ["3x − 2y + 5", "ngoac", "Bỏ dấu trừ mà không đổi dấu hạng tử nào."]], "sol": "Đổi dấu từng hạng tử: 3x → −3x, −2y → +2y, +5 → −5.", "hint": null}, {"type": "fill", "p": "Điền vào chỗ trống: 7 − 2x = −(2x ☐ ☐)", "tpl": "7 − 2x = −(2x ☐ ☐)", "ans": ["−", "7"], "alts": [], "sol": "7 − 2x = −(2x − 7). Thử lại: −(2x − 7) = −2x + 7. Khớp.", "tag": "doidau", "hint": null}, {"type": "tf", "lhs": "(3 − x)²", "rhs": "(x − 3)²", "truth": true, "sol": "Bình phương thì mất dấu trừ: (3 − x)² = [−(x − 3)]² = (x − 3)².", "tag": "luythua"}, {"type": "tf", "lhs": "(2 − x)³", "rhs": "(x − 2)³", "truth": false, "sol": "Lập phương giữ dấu trừ: (2 − x)³ = −(x − 2)³.", "tag": "luythua"}, {"type": "tf", "lhs": "(x − y)(y − x)", "rhs": "(x − y)²", "truth": false, "sol": "(y − x) = −(x − y), nên (x − y)(y − x) = −(x − y)².", "tag": "doidau"}, {"type": "mc", "p": "5x² − 5x = ?", "ok": "5x(x − 1)", "wrong": [["5x·x", "so1", "Hạng tử 5x trùng nhân tử chung thì còn lại 1, không phải 0."], ["5x(x − 5)", "chung", "5x : 5x = 1, không phải 5."], ["x(5x − 1)", "chung", "Nhân tử chung lớn nhất là 5x, và x(5x − 1) = 5x² − x, không bằng đề."]], "sol": "5x² − 5x = 5x·x − 5x·1 = 5x(x − 1).", "hint": null}, {"type": "mc", "p": "Tính: −3²", "ok": "−9", "wrong": [["9", "luythua", "−3² = −(3²) = −9. Chỉ (−3)² mới bằng 9."]], "sol": "Lũy thừa làm trước, dấu trừ làm sau: −3² = −9.", "hint": null}]}]}, {"id": "d1", "short": "Dạng 1", "title": "Dạng 1: Đặt nhân tử chung", "rule": "ƯCLN của hệ số × biến chung với số mũ nhỏ nhất → đưa ra ngoài, giữ nguyên dấu từng hạng tử. Đặt −a ra ngoài thì đổi dấu MỌI hạng tử trong ngoặc.", "levels": [{"name": "Nhận biết", "items": [{"type": "mc", "p": "6x² + 9x", "ok": "3x(2x + 3)", "wrong": [["3(2x² + 3x)", "trietde", "Còn x chung trong ngoặc, phải đặt cả x ra ngoài."], ["3x(2x + 9)", "chung", "9x : 3x = 3, không phải 9."], ["3x(2x − 3)", "giudau", "+9x đưa vào ngoặc vẫn là +3."]], "sol": "ƯCLN(6, 9) = 3, biến chung x → 6x² + 9x = 3x(2x + 3).", "hint": null}, {"type": "mc", "p": "x³ − 4x² + x", "ok": "x(x² − 4x + 1)", "wrong": [["x(x² − 4x)", "so1", "Hạng tử x chia cho x còn 1, không mất đi."], ["x(x² + 4x + 1)", "giudau", "−4x² đưa vào ngoặc phải là −4x."], ["x(x² − 4)", "chung", "Thiếu hạng tử, mỗi hạng tử của đề phải có một hạng tử tương ứng trong ngoặc."]], "sol": "x³ − 4x² + x = x·x² − x·4x + x·1 = x(x² − 4x + 1).", "hint": null}, {"type": "fill", "p": "12x³y² − 18x²y³", "tpl": "6x²y²(☐x ☐ ☐y)", "ans": ["2", "−", "3"], "alts": [], "sol": "ƯCLN(12, 18) = 6, biến chung x²y² → 6x²y²(2x − 3y).", "tag": "giudau", "hint": null}, {"type": "mc", "p": "−4x² − 8x", "ok": "−4x(x + 2)", "wrong": [["−4x(x − 2)", "ngoac", "Đặt −4x ra ngoài: −8x : (−4x) = +2."], ["4x(x + 2)", "ngoac", "4x(x + 2) = 4x² + 8x, mất dấu trừ."], ["−4(x² + 2x)", "trietde", "Còn x chung trong ngoặc."]], "sol": "Đặt −4x ra ngoài: −4x² : (−4x) = x; −8x : (−4x) = 2 → −4x(x + 2).", "hint": null}]}, {"name": "Thông hiểu", "items": [{"type": "mc", "p": "2x(x − 3) + 5(x − 3)", "ok": "(x − 3)(2x + 5)", "wrong": [["(x − 3)(2x − 5)", "giudau", "+5(x − 3) nên trong ngoặc là +5."], ["10x(x − 3)²", "chung", "Đặt nhân tử chung thì CỘNG phần còn lại, không nhân."], ["(x + 3)(2x + 5)", "giudau", "Nhân tử chung là (x − 3), chép sai dấu."]], "sol": "Nhân tử chung (x − 3): 2x(x − 3) + 5(x − 3) = (x − 3)(2x + 5).", "hint": null}, {"type": "mc", "p": "3x(x − 2y) + 6y(2y − x)", "ok": "3(x − 2y)²", "wrong": [["3(x − 2y)(x + 2y)", "doidau", "(2y − x) = −(x − 2y), không phải (x − 2y). Phải đổi dấu cả 6y."], ["−3(x − 2y)²", "doidau", "Đổi dấu hai lần: +6y(2y − x) = −6y(x − 2y) rồi giữ nguyên."], ["(x − 2y)(3x − 6y)", "trietde", "Ngoặc (3x − 6y) còn đặt được 3 ra ngoài."]], "sol": "6y(2y − x) = −6y(x − 2y) → (x − 2y)(3x − 6y) = 3(x − 2y)(x − 2y) = 3(x − 2y)².", "hint": null}, {"type": "fill", "p": "5x(x − 1) − 3(1 − x)", "tpl": "(x − 1)(5x ☐ 3)", "ans": ["+"], "alts": [], "sol": "−3(1 − x) = +3(x − 1) → (x − 1)(5x + 3).", "tag": "doidau", "hint": null}, {"type": "mc", "p": "(x − 2)(x + 3) − 2(x − 2)", "ok": "(x − 2)(x + 1)", "wrong": [["(x − 2)(x + 5)", "giudau", "Trừ 2: (x + 3) − 2 = x + 1."], ["−2(x − 2)²(x + 3)", "chung", "Đặt nhân tử chung thì trừ phần còn lại, không nhân."], ["(x + 2)(x + 1)", "giudau", "Nhân tử chung là (x − 2)."]], "sol": "(x − 2)[(x + 3) − 2] = (x − 2)(x + 1).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "fill", "p": "(x − 1)(2x + 3) − (1 − x)(x + 5)", "tpl": "(x − 1)(☐x ☐ ☐)", "ans": ["3", "+", "8"], "alts": [], "sol": "−(1 − x)(x + 5) = +(x − 1)(x + 5) → (x − 1)(2x + 3 + x + 5) = (x − 1)(3x + 8).", "tag": "doidau", "hint": null}, {"type": "mc", "p": "4x² − 6x − (2x − 3)(x + 4)", "ok": "(2x − 3)(x − 4)", "wrong": [["(2x − 3)(x + 4)", "ngoac", "2x − (x + 4) = 2x − x − 4, phải đổi dấu cả số 4."], ["(2x − 3)(3x + 4)", "ngoac", "Đây là phép trừ, không phải cộng."], ["2x(2x − 3)(x + 4)", "chung", "Đặt nhân tử chung thì trừ phần còn lại, không nhân."]], "sol": "4x² − 6x = 2x(2x − 3) → (2x − 3)[2x − (x + 4)] = (2x − 3)(x − 4).", "hint": null}, {"type": "mc", "p": "(3x − 2)(x + 1) − (2 − 3x)(2x − 5) + (3x − 2)   (Thử thách)", "ok": "3(3x − 2)(x − 1)", "wrong": [["(3x − 2)(7 − x)", "doidau", "−(2 − 3x) = +(3x − 2), không phải −(3x − 2)."], ["(3x − 2)(3x − 4)", "so1", "Hạng tử (3x − 2) cuối cùng còn lại 1, đừng bỏ."], ["(3x − 2)(3x − 3)", "trietde", "(3x − 3) còn đặt được 3 ra ngoài."]], "sol": "= (3x − 2)[(x + 1) + (2x − 5) + 1] = (3x − 2)(3x − 3) = 3(3x − 2)(x − 1).", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "3x(x − 5) − 2(5 − x)", "steps": [["= 3x(x − 5) − 2(x − 5)", "3x(x − 5) − 2(x − 5)"], ["= (x − 5)(3x − 2)", "(x - 5)(3x - 2)"]], "wrong": 0, "fixes": [["= 3x(x − 5) + 2(x − 5)", true], ["= 3x(x − 5) − 2(x + 5)", false], ["= 3x(5 − x) − 2(5 − x)", false]], "sol": "−2(5 − x) = +2(x − 5). Kết quả đúng: (x − 5)(3x + 2).", "tag": "doidau"}, {"type": "spot", "p": "−6x³ + 9x² − 3x", "steps": [["Nhân tử chung: ƯCLN(6, 9, 3) = 3, biến chung x. Đặt −3x ra ngoài.", null], ["= −3x(2x² + 3x + 1)", "−3x(2x² + 3x + 1)"], ["= −3x(x + 1)(2x + 1)", "−3x(x + 1)(2x + 1)"]], "wrong": 1, "fixes": [["= −3x(2x² − 3x + 1)", true], ["= −3x(2x² − 3x − 1)", false], ["= −3x(−2x² + 3x − 1)", false]], "sol": "Đặt −3x ra ngoài thì đổi dấu mọi hạng tử: −3x(2x² − 3x + 1) = −3x(x − 1)(2x − 1).", "tag": "ngoac"}]}]}, {"id": "d2", "short": "Dạng 2", "title": "Dạng 2: Dùng hằng đẳng thức", "rule": "2 hạng tử bình phương, có dấu trừ → A² − B². 3 hạng tử → (A ± B)². 2 hạng tử lập phương → A³ ± B³. A − B mà B là cả biểu thức thì phải để B trong ngoặc.", "levels": [{"name": "Nhận biết", "items": [{"type": "mc", "p": "25x² − 9", "ok": "(5x − 3)(5x + 3)", "wrong": [["(5x − 3)²", "hdt", "(5x − 3)² = 25x² − 30x + 9, thừa hạng tử −30x."], ["(25x − 9)(25x + 9)", "hdt", "25x² = (5x)², 9 = 3²: A = 5x, B = 3."], ["(5x − 9)(5x + 9)", "hdt", "9 = 3², nên B = 3 chứ không phải 9."]], "sol": "25x² − 9 = (5x)² − 3² = (5x − 3)(5x + 3).", "hint": null}, {"type": "mc", "p": "x² − 10x + 25", "ok": "(x − 5)²", "wrong": [["(x + 5)²", "hdt", "Hạng tử giữa −10x mang dấu trừ → (A − B)²."], ["(x − 5)(x + 5)", "hdt", "(x − 5)(x + 5) = x² − 25, không có −10x."], ["(x − 25)²", "hdt", "25 = 5², nên B = 5."]], "sol": "x² − 2·x·5 + 5² = (x − 5)².", "hint": null}, {"type": "fill", "p": "9x² + 6x + 1", "tpl": "(☐x ☐ ☐)²", "ans": ["3", "+", "1"], "alts": [], "sol": "9x² + 2·3x·1 + 1² = (3x + 1)².", "tag": "hdt", "hint": null}, {"type": "mc", "p": "x³ − 8", "ok": "(x − 2)(x² + 2x + 4)", "wrong": [["(x − 2)(x² − 2x + 4)", "hdt", "A³ − B³ = (A − B)(A² + AB + B²): dấu giữa là cộng."], ["(x − 2)(x² + 4x + 4)", "hdt", "Hạng tử giữa là AB = 2x, không phải 2AB."], ["(x − 2)³", "hdt", "(x − 2)³ = x³ − 6x² + 12x − 8, khác đề."]], "sol": "x³ − 2³ = (x − 2)(x² + 2x + 4).", "hint": null}]}, {"name": "Thông hiểu", "items": [{"type": "mc", "p": "−x² + 6x − 9", "ok": "−(x − 3)²", "wrong": [["(x − 3)²", "ngoac", "Quên dấu trừ đặt ra ngoài."], ["−(x + 3)²", "ngoac", "−x² + 6x − 9 = −(x² − 6x + 9): +6x vào ngoặc thành −6x."], ["(3 − x)²", "luythua", "(3 − x)² = (x − 3)², bình phương làm mất dấu trừ."]], "sol": "−x² + 6x − 9 = −(x² − 6x + 9) = −(x − 3)².", "hint": null}, {"type": "fill", "p": "27x³ + 1", "tpl": "(☐x ☐ 1)(9x² ☐ 3x ☐ 1)", "ans": ["3", "+", "−", "+"], "alts": [], "sol": "(3x)³ + 1³ = (3x + 1)(9x² − 3x + 1). Tổng lập phương: dấu giữa ngoặc sau là trừ.", "tag": "hdt", "hint": null}, {"type": "mc", "p": "(2x − 1)² − 9", "ok": "4(x − 2)(x + 1)", "wrong": [["(2x − 4)(2x + 2)", "trietde", "Mỗi ngoặc còn đặt được 2 ra ngoài."], ["(2x − 10)(2x + 8)", "hdt", "9 = 3², nên B = 3 chứ không phải 9."], ["4(x + 2)(x − 1)", "ngoac", "A = 2x − 1, không phải 2x + 1."]], "sol": "(2x − 1 − 3)(2x − 1 + 3) = (2x − 4)(2x + 2) = 4(x − 2)(x + 1).", "hint": null}, {"type": "mc", "p": "(3x + 2)² − (x − 4)²", "ok": "4(x + 3)(2x − 1)", "wrong": [["4(x − 1)(2x − 1)", "ngoac", "(3x + 2) − (x − 4) = 3x + 2 − x + 4: phải đổi dấu −4 thành +4."], ["(2x + 6)(4x + 6)", "ngoac", "Ngoặc cộng: (3x + 2) + (x − 4) = 4x − 2, giữ nguyên dấu."], ["(2x + 6)(4x − 2)", "trietde", "Mỗi ngoặc còn đặt được 2 ra ngoài."]], "sol": "[(3x + 2) − (x − 4)][(3x + 2) + (x − 4)] = (2x + 6)(4x − 2) = 4(x + 3)(2x − 1).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "fill", "p": "8x³ − 36x²y + 54xy² − 27y³", "tpl": "(☐x ☐ ☐y)³", "ans": ["2", "−", "3"], "alts": [], "sol": "(2x)³ − 3·(2x)²·3y + 3·2x·(3y)² − (3y)³ = (2x − 3y)³.", "tag": "hdt", "hint": null}, {"type": "mc", "p": "16(x − 1)² − 9(x + 2)²", "ok": "(x − 10)(7x + 2)", "wrong": [["(x + 2)(7x + 2)", "ngoac", "(4x − 4) − (3x + 6) = 4x − 4 − 3x − 6 = x − 10."], ["(x − 10)(7x − 10)", "ngoac", "(4x − 4) + (3x + 6) = 7x + 2, giữ nguyên dấu."]], "sol": "[4(x − 1)]² − [3(x + 2)]² = (4x − 4 − 3x − 6)(4x − 4 + 3x + 6) = (x − 10)(7x + 2).", "hint": null}, {"type": "mc", "p": "x⁴ − 16   (Thử thách)", "ok": "(x − 2)(x + 2)(x² + 4)", "wrong": [["(x² − 4)(x² + 4)", "trietde", "x² − 4 còn là hiệu hai bình phương."], ["(x − 2)²(x + 2)²", "hdt", "Đây là (x² − 4)², khác x⁴ − 16."], ["(x − 2)(x + 2)(x² − 4)", "hdt", "(x²)² − 4² = (x² − 4)(x² + 4), ngoặc sau là cộng."]], "sol": "x⁴ − 16 = (x² − 4)(x² + 4) = (x − 2)(x + 2)(x² + 4).", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "(5x − 3)² − (2x + 1)²", "steps": [["= [(5x − 3) − (2x + 1)]·[(5x − 3) + (2x + 1)]", "((5x - 3) - (2x + 1))*((5x - 3) + (2x + 1))"], ["= (5x − 3 − 2x + 1)(5x − 3 + 2x + 1)", "(5x − 3 − 2x + 1)(5x − 3 + 2x + 1)"], ["= (3x − 2)(7x − 2)", "(3x − 2)(7x − 2)"]], "wrong": 1, "fixes": [["= (5x − 3 − 2x − 1)(5x − 3 + 2x + 1)", true], ["= (5x − 3 − 2x − 1)(5x − 3 + 2x − 1)", false], ["= (5x + 3 − 2x − 1)(5x − 3 + 2x + 1)", false]], "sol": "−(2x + 1) = −2x − 1. Kết quả đúng: (3x − 4)(7x − 2).", "tag": "ngoac"}, {"type": "spot", "p": "8x³ − 1", "steps": [["= (2x)³ − 1³", "(2x)³ − 1"], ["= (2x − 1)(4x² − 2x + 1)", "(2x − 1)(4x² − 2x + 1)"]], "wrong": 1, "fixes": [["= (2x − 1)(4x² + 2x + 1)", true], ["= (2x − 1)(4x² + 4x + 1)", false], ["= (2x + 1)(4x² − 2x + 1)", false]], "sol": "A³ − B³ = (A − B)(A² + AB + B²). Kết quả đúng: (2x − 1)(4x² + 2x + 1).", "tag": "hdt"}]}]}, {"id": "d3", "short": "Dạng 3", "title": "Dạng 3: Nhóm hạng tử", "rule": "Nhóm sao cho mỗi nhóm có nhân tử chung hoặc thành hằng đẳng thức. Đặt dấu trừ trước một nhóm thì đổi dấu mọi hạng tử trong nhóm đó.", "levels": [{"name": "Nhận biết", "items": [{"type": "mc", "p": "x² + 3x + xy + 3y", "ok": "(x + 3)(x + y)", "wrong": [["(x + 3)(x − y)", "giudau", "+y(x + 3) nên trong ngoặc là +y."], ["(x + 3)(y + 1)", "nhom", "x² + 3x = x(x + 3), phần còn lại là x chứ không phải 1."]], "sol": "(x² + 3x) + (xy + 3y) = x(x + 3) + y(x + 3) = (x + 3)(x + y).", "hint": null}, {"type": "mc", "p": "x² − xy + x − y", "ok": "(x − y)(x + 1)", "wrong": [["(x − y)(x − 1)", "giudau", "Nhóm sau là +(x − y), nên cộng 1."], ["x(x − y)", "so1", "x(x − y) + (x − y): hạng tử (x − y) còn lại 1."], ["(x + y)(x − 1)", "nhom", "(x + y)(x − 1) = x² − x + xy − y, khác đề."]], "sol": "x(x − y) + (x − y) = (x − y)(x + 1).", "hint": null}, {"type": "fill", "p": "2x² + 6x − ax − 3a", "tpl": "(x ☐ 3)(2x ☐ a)", "ans": ["+", "−"], "alts": [], "sol": "2x(x + 3) − a(x + 3) = (x + 3)(2x − a).", "tag": "ngoac", "hint": null}, {"type": "mc", "p": "x³ + x² + x + 1", "ok": "(x + 1)(x² + 1)", "wrong": [["x²(x + 1)", "so1", "x²(x + 1) + (x + 1): hạng tử (x + 1) còn lại 1."], ["(x + 1)(x² − 1)", "giudau", "Nhóm sau là +(x + 1), nên +1."], ["(x − 1)(x² + 1)", "giudau", "x³ + x² = x²(x + 1), không phải (x − 1)."]], "sol": "x²(x + 1) + (x + 1) = (x + 1)(x² + 1).", "hint": null}]}, {"name": "Thông hiểu", "items": [{"type": "mc", "p": "ax − bx − a + b", "ok": "(a − b)(x − 1)", "wrong": [["(a − b)(x + 1)", "ngoac", "−a + b = −(a − b), nên là trừ 1."], ["(a + b)(x − 1)", "ngoac", "ax − bx = x(a − b), không phải x(a + b)."], ["(b − a)(x − 1)", "doidau", "(b − a) = −(a − b), đổi dấu cả biểu thức."]], "sol": "x(a − b) − (a − b) = (a − b)(x − 1).", "hint": null}, {"type": "mc", "p": "x² − 2xy + y² − 9", "ok": "(x − y − 3)(x − y + 3)", "wrong": [["(x + y − 3)(x + y + 3)", "hdt", "x² − 2xy + y² = (x − y)², không phải (x + y)²."], ["(x − y − 9)(x − y + 9)", "hdt", "9 = 3², nên B = 3."], ["(x − y − 3)²", "hdt", "Đây là hiệu hai bình phương, ra hai ngoặc khác dấu."]], "sol": "(x − y)² − 3² = (x − y − 3)(x − y + 3).", "hint": null}, {"type": "fill", "p": "9 − x² + 2xy − y²", "tpl": "(3 ☐ x ☐ y)(3 ☐ x ☐ y)", "ans": ["−", "+", "+", "−"], "alts": [["+", "−", "−", "+"]], "sol": "9 − (x² − 2xy + y²) = 3² − (x − y)² = (3 − x + y)(3 + x − y).", "tag": "ngoac", "hint": null}, {"type": "mc", "p": "x² − 4y² − 2x − 4y", "ok": "(x + 2y)(x − 2y − 2)", "wrong": [["(x + 2y)(x − 2y + 2)", "ngoac", "−2x − 4y = −2(x + 2y), nên trừ 2."], ["(x − 2y)(x + 2y − 2)", "nhom", "Nhân tử chung của hai nhóm là (x + 2y)."], ["(x + 2y)(x − 2y − 4)", "chung", "−2x − 4y = −2(x + 2y), còn lại −2."]], "sol": "(x − 2y)(x + 2y) − 2(x + 2y) = (x + 2y)(x − 2y − 2).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "mc", "p": "x³ − 3x² − 4x + 12", "ok": "(x − 3)(x − 2)(x + 2)", "wrong": [["(x − 3)(x² − 4)", "trietde", "x² − 4 còn phân tích được."], ["(x − 3)(x² + 4)", "ngoac", "−4x + 12 = −4(x − 3), nên là trừ 4."], ["(x + 3)(x − 2)(x + 2)", "ngoac", "x³ − 3x² = x²(x − 3)."]], "sol": "x²(x − 3) − 4(x − 3) = (x − 3)(x² − 4) = (x − 3)(x − 2)(x + 2).", "hint": null}, {"type": "fill", "p": "x² − y² − 6x + 9", "tpl": "(x − y ☐ 3)(x + y ☐ 3)", "ans": ["−", "−"], "alts": [], "sol": "(x² − 6x + 9) − y² = (x − 3)² − y² = (x − 3 − y)(x − 3 + y).", "tag": "hdt", "hint": null}, {"type": "mc", "p": "a² − b² − 2b − 1   (Thử thách)", "ok": "(a − b − 1)(a + b + 1)", "wrong": [["(a − b + 1)(a + b − 1)", "ngoac", "−b² − 2b − 1 = −(b² + 2b + 1) = −(b + 1)²."], ["(a − b − 1)(a + b − 1)", "hdt", "A² − B² với B = b + 1: (a − b − 1)(a + b + 1)."], ["(a − b − 1)²", "hdt", "Hiệu hai bình phương ra hai ngoặc khác nhau."]], "sol": "a² − (b² + 2b + 1) = a² − (b + 1)² = (a − b − 1)(a + b + 1).", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "x³ − x² − 4x + 4", "steps": [["= (x³ − x²) − (4x + 4)", "(x³ − x²) − (4x + 4)"], ["= x²(x − 1) − 4(x + 1)", "x²(x − 1) − 4(x + 1)"], ["→ Không có nhân tử chung, dừng lại.", null]], "wrong": 0, "fixes": [["= (x³ − x²) − (4x − 4)", true], ["= (x³ − x²) + (4x − 4)", false], ["= (x³ + x²) − (4x − 4)", false]], "sol": "−4x + 4 = −(4x − 4). Kết quả đúng: x²(x − 1) − 4(x − 1) = (x − 1)(x − 2)(x + 2).", "tag": "ngoac"}, {"type": "spot", "p": "x² − y² − 2y − 1", "steps": [["= x² − (y² + 2y + 1)", "x² − (y² + 2y + 1)"], ["= x² − (y + 1)²", "x² − (y + 1)²"], ["= (x − y + 1)(x + y + 1)", "(x − y + 1)(x + y + 1)"]], "wrong": 2, "fixes": [["= (x − y − 1)(x + y + 1)", true], ["= (x − y + 1)(x + y − 1)", false], ["= (x + y − 1)(x + y + 1)", false]], "sol": "x − (y + 1) = x − y − 1. Kết quả đúng: (x − y − 1)(x + y + 1).", "tag": "ngoac"}]}]}, {"id": "d4", "short": "Dạng 4", "title": "Dạng 4: Phối hợp nhiều phương pháp", "rule": "Thứ tự thử: đặt nhân tử chung → hằng đẳng thức → nhóm. Phân tích đến khi từng nhân tử không phân tích được nữa.", "levels": [{"name": "Nhận biết", "items": [{"type": "mc", "p": "2x² − 8", "ok": "2(x − 2)(x + 2)", "wrong": [["2(x² − 4)", "trietde", "x² − 4 còn là hiệu hai bình phương."], ["2(x − 2)²", "hdt", "2(x − 2)² = 2x² − 8x + 8, khác đề."], ["2(x − 4)(x + 4)", "hdt", "4 = 2², nên B = 2."]], "sol": "2x² − 8 = 2(x² − 4) = 2(x − 2)(x + 2).", "hint": null}, {"type": "mc", "p": "3x³ − 12x² + 12x", "ok": "3x(x − 2)²", "wrong": [["3x(x² − 4x + 4)", "trietde", "x² − 4x + 4 = (x − 2)²."], ["3x(x + 2)²", "hdt", "Hạng tử giữa −4x mang dấu trừ → (x − 2)²."], ["3x(x − 2)(x + 2)", "hdt", "(x − 2)(x + 2) = x² − 4, không có −4x."]], "sol": "3x(x² − 4x + 4) = 3x(x − 2)².", "hint": null}, {"type": "fill", "p": "x³ − x", "tpl": "x(x ☐ 1)(x ☐ 1)", "ans": ["−", "+"], "alts": [["+", "−"]], "sol": "x(x² − 1) = x(x − 1)(x + 1).", "tag": "hdt", "hint": null}, {"type": "mc", "p": "5x² + 10xy + 5y²", "ok": "5(x + y)²", "wrong": [["5(x² + 2xy + y²)", "trietde", "x² + 2xy + y² = (x + y)²."], ["5(x − y)²", "hdt", "Hạng tử giữa +10xy mang dấu cộng."], ["(5x + 5y)²", "chung", "(5x + 5y)² = 25(x + y)², gấp 5 lần đề."]], "sol": "5(x² + 2xy + y²) = 5(x + y)².", "hint": null}]}, {"name": "Thông hiểu", "items": [{"type": "mc", "p": "−2x³ + 8x", "ok": "−2x(x − 2)(x + 2)", "wrong": [["−2x(x² + 4)", "ngoac", "Đặt −2x ra ngoài: 8x : (−2x) = −4, nên là x² − 4."], ["2x(x − 2)(x + 2)", "ngoac", "Mất dấu trừ của −2x³."], ["−2x(x − 2)²", "hdt", "x² − 4 là hiệu hai bình phương, không phải bình phương."]], "sol": "−2x(x² − 4) = −2x(x − 2)(x + 2).", "hint": null}, {"type": "fill", "p": "3x² − 6xy + 3y² − 12", "tpl": "3(x − y ☐ 2)(x − y ☐ 2)", "ans": ["−", "+"], "alts": [["+", "−"]], "sol": "3[(x − y)² − 4] = 3(x − y − 2)(x − y + 2).", "tag": "hdt", "hint": null}, {"type": "mc", "p": "x⁴ − x³ − x + 1", "ok": "(x − 1)²(x² + x + 1)", "wrong": [["(x − 1)(x³ − 1)", "trietde", "x³ − 1 còn là hiệu hai lập phương."], ["(x − 1)(x³ + 1)", "ngoac", "−x + 1 = −(x − 1), nên x³(x − 1) − (x − 1)."], ["(x − 1)²(x² − x + 1)", "hdt", "x³ − 1 = (x − 1)(x² + x + 1)."]], "sol": "x³(x − 1) − (x − 1) = (x − 1)(x³ − 1) = (x − 1)²(x² + x + 1).", "hint": null}, {"type": "mc", "p": "ax² − ay² + 2ax + a", "ok": "a(x − y + 1)(x + y + 1)", "wrong": [["a(x − y − 1)(x + y + 1)", "ngoac", "(x + 1) − y = x − y + 1."], ["a(x − y + 1)(x + y − 1)", "ngoac", "(x + 1) + y = x + y + 1."], ["a(x² + 2x + 1 − y²)", "trietde", "Trong ngoặc còn (x + 1)² − y²."]], "sol": "a(x² + 2x + 1 − y²) = a[(x + 1)² − y²] = a(x + 1 − y)(x + 1 + y).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "mc", "p": "x³ − 4x² + 4x − xy²", "ok": "x(x − y − 2)(x + y − 2)", "wrong": [["x(x − y + 2)(x + y + 2)", "hdt", "x² − 4x + 4 = (x − 2)², không phải (x + 2)²."], ["x(x − y − 2)(x + y + 2)", "ngoac", "(x − 2) + y = x + y − 2."], ["x[(x − 2)² − y²]", "trietde", "Còn hiệu hai bình phương."]], "sol": "x(x² − 4x + 4 − y²) = x[(x − 2)² − y²] = x(x − 2 − y)(x − 2 + y).", "hint": null}, {"type": "fill", "p": "2a³ − 54b³", "tpl": "2(a ☐ 3b)(a² ☐ 3ab ☐ 9b²)", "ans": ["−", "+", "+"], "alts": [], "sol": "2(a³ − 27b³) = 2(a − 3b)(a² + 3ab + 9b²).", "tag": "hdt", "hint": null}, {"type": "mc", "p": "x⁴ + 2x³ + x² − 9   (Thử thách)", "ok": "(x² + x − 3)(x² + x + 3)", "wrong": [["(x² + x − 9)(x² + x + 9)", "hdt", "9 = 3², nên B = 3."], ["(x² − x − 3)(x² + x + 3)", "ngoac", "A = x² + x trong cả hai ngoặc."], ["(x² + x − 3)²", "hdt", "Hiệu hai bình phương ra hai ngoặc khác dấu."]], "sol": "(x² + x)² − 3² = (x² + x − 3)(x² + x + 3).", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "−3x³ + 27x", "steps": [["= −3x(x² + 9)", "−3x(x² + 9)"], ["→ x² + 9 không phân tích được, dừng lại.", null]], "wrong": 0, "fixes": [["= −3x(x² − 9)", true], ["= 3x(x² − 9)", false], ["= −3x(x² − 27)", false]], "sol": "27x : (−3x) = −9. Kết quả đúng: −3x(x² − 9) = −3x(x − 3)(x + 3).", "tag": "ngoac"}, {"type": "spot", "p": "x² − 6x + 9 − 16y²", "steps": [["= (x − 3)² − (4y)²", "(x − 3)² − (4y)²"], ["= (x − 3 − 4y)(x + 3 + 4y)", "(x − 3 − 4y)(x + 3 + 4y)"]], "wrong": 1, "fixes": [["= (x − 3 − 4y)(x − 3 + 4y)", true], ["= (x + 3 − 4y)(x + 3 + 4y)", false], ["= (x − 3 − 4y)(x − 3 − 4y)", false]], "sol": "A = x − 3 giữ nguyên trong cả hai ngoặc: (x − 3 − 4y)(x − 3 + 4y).", "tag": "ngoac"}]}]}, {"id": "d5", "short": "Dạng 5", "title": "Dạng 5: Tách hạng tử", "rule": "ax² + bx + c: tìm 2 số có tích = a·c, tổng = b. Mẹo dấu: a·c > 0 → hai số cùng dấu với b; a·c < 0 → hai số trái dấu, số lớn hơn (bỏ dấu) mang dấu của b.", "levels": [{"name": "Nhận biết", "items": [{"type": "fill", "p": "x² + 5x + 6", "tpl": "(x ☐ 2)(x ☐ 3)", "ans": ["+", "+"], "alts": [], "sol": "Tích 6, tổng 5 → 2 và 3: x² + 2x + 3x + 6 = (x + 2)(x + 3).", "tag": "tichtong", "hint": null}, {"type": "mc", "p": "x² − 7x + 10", "ok": "(x − 2)(x − 5)", "wrong": [["(x + 2)(x + 5)", "tichtong", "Tích +10, tổng −7 → hai số cùng âm."], ["(x − 2)(x + 5)", "tichtong", "Tích phải là +10, ở đây ra −10."], ["(x − 1)(x − 10)", "tichtong", "Tích 10 nhưng tổng là −11."]], "sol": "Tích 10, tổng −7 → −2 và −5: (x − 2)(x − 5).", "hint": null}, {"type": "mc", "p": "x² + 2x − 15", "ok": "(x − 3)(x + 5)", "wrong": [["(x + 3)(x − 5)", "tichtong", "Tổng phải là +2: số lớn hơn (5) mang dấu cộng."], ["(x − 3)(x − 5)", "tichtong", "Tích −15 → hai số trái dấu."], ["(x + 3)(x + 5)", "tichtong", "Tích −15 → hai số trái dấu."]], "sol": "Tích −15, tổng 2 → −3 và 5: (x − 3)(x + 5).", "hint": null}, {"type": "fill", "p": "x² − x − 6", "tpl": "(x ☐ 3)(x ☐ 2)", "ans": ["−", "+"], "alts": [], "sol": "Tích −6, tổng −1 → −3 và 2: (x − 3)(x + 2).", "tag": "tichtong", "hint": null}]}, {"name": "Thông hiểu", "items": [{"type": "mc", "p": "2x² + 5x − 3", "ok": "(x + 3)(2x − 1)", "wrong": [["(x − 3)(2x + 1)", "tichtong", "a·c = −6, tổng +5 → 6 và −1 (số lớn mang dấu cộng)."], ["(x + 3)(2x + 1)", "tichtong", "Tích a·c âm → hai số trái dấu."], ["(2x + 3)(x − 1)", "tichtong", "(2x + 3)(x − 1) = 2x² + x − 3, sai hệ số của x."]], "sol": "a·c = −6, tổng 5 → 6 và −1: 2x² + 6x − x − 3 = 2x(x + 3) − (x + 3) = (x + 3)(2x − 1).", "hint": null}, {"type": "fill", "p": "3x² − 10x + 3", "tpl": "(3x ☐ 1)(x ☐ 3)", "ans": ["−", "−"], "alts": [], "sol": "a·c = 9, tổng −10 → −9 và −1: 3x² − 9x − x + 3 = 3x(x − 3) − (x − 3) = (3x − 1)(x − 3).", "tag": "tichtong", "hint": null}, {"type": "mc", "p": "2x² − x − 6", "ok": "(x − 2)(2x + 3)", "wrong": [["(x + 2)(2x − 3)", "tichtong", "a·c = −12, tổng −1 → −4 và 3 (số lớn mang dấu trừ)."], ["(x − 2)(2x − 3)", "tichtong", "Tích a·c âm → hai số trái dấu."], ["(2x + 1)(x − 6)", "tichtong", "(2x + 1)(x − 6) = 2x² − 11x − 6."]], "sol": "a·c = −12, tổng −1 → −4 và 3: 2x² − 4x + 3x − 6 = 2x(x − 2) + 3(x − 2) = (x − 2)(2x + 3).", "hint": null}, {"type": "mc", "p": "x² − 4xy − 5y²", "ok": "(x − 5y)(x + y)", "wrong": [["(x + 5y)(x − y)", "tichtong", "Tổng −4 → số lớn (5) mang dấu trừ."], ["(x − 5y)(x − y)", "tichtong", "Tích −5 → hai số trái dấu."], ["(x + 5y)(x + y)", "tichtong", "Tích −5 → hai số trái dấu."]], "sol": "Tích −5, tổng −4 → −5 và 1: (x − 5y)(x + y).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "mc", "p": "x³ − 6x² + 11x − 6", "ok": "(x − 1)(x − 2)(x − 3)", "wrong": [["(x + 1)(x + 2)(x + 3)", "tichtong", "Tổng hệ số 1 − 6 + 11 − 6 = 0 → nghiệm x = 1, nhân tử (x − 1)."], ["(x − 1)(x² − 5x + 6)", "trietde", "x² − 5x + 6 còn tách được."], ["(x − 1)(x + 2)(x − 3)", "tichtong", "x² − 5x + 6: tích 6, tổng −5 → −2 và −3."]], "sol": "Tổng hệ số = 0 → (x − 1)(x² − 5x + 6) = (x − 1)(x − 2)(x − 3).", "hint": null}, {"type": "fill", "p": "x³ + 2x² − x − 2", "tpl": "(x ☐ 1)(x ☐ 1)(x ☐ 2)", "ans": ["−", "+", "+"], "alts": [["+", "−", "+"]], "sol": "x²(x + 2) − (x + 2) = (x + 2)(x² − 1) = (x − 1)(x + 1)(x + 2).", "tag": "tichtong", "hint": null}, {"type": "mc", "p": "x⁴ − 10x² + 9   (Thử thách)", "ok": "(x − 1)(x + 1)(x − 3)(x + 3)", "wrong": [["(x² − 1)(x² − 9)", "trietde", "Cả hai ngoặc còn là hiệu hai bình phương."], ["(x² + 1)(x² + 9)", "tichtong", "Tích 9, tổng −10 → −1 và −9."], ["(x − 1)²(x − 3)²", "hdt", "(x − 1)²(x − 3)² có hạng tử bậc ba, khác đề."]], "sol": "Đặt t = x²: t² − 10t + 9 = (t − 1)(t − 9) → (x² − 1)(x² − 9) = (x − 1)(x + 1)(x − 3)(x + 3).", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "x² − 3x − 10", "steps": [["Tìm 2 số có tích −10, tổng −3: chọn 2 và −5.", null], ["= x² + 2x − 5x − 10", "x² + 2x − 5x − 10"], ["= x(x + 2) − 5(x − 2)", "x(x + 2) − 5(x − 2)"], ["→ Hai nhóm không có nhân tử chung, dừng lại.", null]], "wrong": 2, "fixes": [["= x(x + 2) − 5(x + 2)", true], ["= x(x + 2) + 5(x + 2)", false], ["= x(x − 2) − 5(x + 2)", false]], "sol": "−5x − 10 = −5(x + 2). Kết quả đúng: (x + 2)(x − 5).", "tag": "ngoac"}, {"type": "spot", "p": "2x² − 5x − 3", "steps": [["a·c = −6, tổng −5: chọn 6 và −1.", null], ["= 2x² + 6x − x − 3", "2x² + 6x − x − 3"], ["= 2x(x + 3) − (x + 3) = (x + 3)(2x − 1)", "(x + 3)(2x − 1)"]], "wrong": 0, "fixes": [["Chọn −6 và 1 (tích −6, tổng −5).", true], ["Chọn −3 và 2 (tích −6, tổng −1).", false], ["Chọn 3 và −2 (tích −6, tổng 1).", false]], "sol": "6 + (−1) = 5 chứ không phải −5. Đúng: −6 và 1 → 2x² − 6x + x − 3 = (x − 3)(2x + 1).", "tag": "tichtong"}]}]}, {"id": "d6", "short": "Dạng 6", "title": "Dạng 6 (nâng cao): Thêm bớt cùng một hạng tử", "rule": "A² + B² (thường là A⁴ + B⁴): thêm và bớt 2AB để có (A + B)² − 2AB, nếu 2AB là bình phương thì dùng hiệu hai bình phương. Thêm bao nhiêu thì phải bớt bấy nhiêu.", "levels": [{"name": "Thông hiểu", "items": [{"type": "mc", "p": "x⁴ + 4", "ok": "(x² − 2x + 2)(x² + 2x + 2)", "wrong": [["(x² + 2)²", "thembot", "(x² + 2)² = x⁴ + 4x² + 4: thêm 4x² mà chưa bớt."], ["(x² − 2x + 2)²", "hdt", "Hiệu hai bình phương ra hai ngoặc khác dấu ở hạng tử 2x."], ["(x² + 2x + 2)(x² + 2x − 2)", "ngoac", "A = x² + 2 giữ nguyên, chỉ 2x đổi dấu."]], "sol": "x⁴ + 4x² + 4 − 4x² = (x² + 2)² − (2x)² = (x² − 2x + 2)(x² + 2x + 2).", "hint": null}, {"type": "fill", "p": "4x⁴ + 1", "tpl": "(2x² ☐ 2x + 1)(2x² ☐ 2x + 1)", "ans": ["−", "+"], "alts": [["+", "−"]], "sol": "4x⁴ + 4x² + 1 − 4x² = (2x² + 1)² − (2x)² = (2x² − 2x + 1)(2x² + 2x + 1).", "tag": "hdt", "hint": null}, {"type": "mc", "p": "x⁴ + 4x² + 16", "ok": "(x² − 2x + 4)(x² + 2x + 4)", "wrong": [["(x² + 4)²", "thembot", "(x² + 4)² = x⁴ + 8x² + 16, phải bớt 4x²."], ["(x² − 4x + 4)(x² + 4x + 4)", "thembot", "Cần bớt 4x² = (2x)², không phải 16x²."], ["(x² − 2x + 4)²", "hdt", "Hiệu hai bình phương ra hai ngoặc khác dấu."]], "sol": "x⁴ + 8x² + 16 − 4x² = (x² + 4)² − (2x)² = (x² − 2x + 4)(x² + 2x + 4).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "mc", "p": "x⁵ + x⁴ + 1", "ok": "(x² + x + 1)(x³ − x + 1)", "wrong": [["(x² + x + 1)(x³ + x + 1)", "ngoac", "Nhân thử: (x² + x + 1)(x³ + x + 1) có hạng tử 2x³ thừa."], ["(x² + x + 1)(x³ − x − 1)", "ngoac", "Hạng tử tự do: 1·(−1) = −1, nhưng đề là +1."], ["(x² − x + 1)(x³ + x + 1)", "ngoac", "Nhân thử: hệ số x⁴ là −1, khác đề."]], "sol": "Thêm bớt x³, x², x để xuất hiện x² + x + 1. Kiểm tra: nhân (x² + x + 1)(x³ − x + 1) = x⁵ + x⁴ + 1.", "hint": null}, {"type": "mc", "p": "x⁴ + 4y⁴", "ok": "(x² − 2xy + 2y²)(x² + 2xy + 2y²)", "wrong": [["(x² + 2y²)²", "thembot", "Thêm 4x²y² mà chưa bớt."], ["(x² − 2xy + 2y²)(x² + 2xy − 2y²)", "ngoac", "A = x² + 2y² giữ nguyên trong cả hai ngoặc."], ["(x² − 2xy + 4y²)(x² + 2xy + 4y²)", "hdt", "4y⁴ = (2y²)², nên B = 2y²."]], "sol": "x⁴ + 4x²y² + 4y⁴ − 4x²y² = (x² + 2y²)² − (2xy)².", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "4x⁴ + 625", "steps": [["= 4x⁴ + 100x² + 625 − 100x²", "4x⁴ + 100x² + 625 − 100x²"], ["= (2x² + 25)² − (10x)²", "(2x² + 25)² − (10x)²"], ["= (2x² + 25 − 10x)(2x² − 25 + 10x)", "(2x² + 25 − 10x)(2x² − 25 + 10x)"]], "wrong": 2, "fixes": [["= (2x² + 25 − 10x)(2x² + 25 + 10x)", true], ["= (2x² − 25 − 10x)(2x² + 25 + 10x)", false], ["= (2x² + 25 − 10x)(2x² + 25 − 10x)", false]], "sol": "A = 2x² + 25 giữ nguyên trong cả hai ngoặc: (2x² − 10x + 25)(2x² + 10x + 25).", "tag": "ngoac"}]}]}, {"id": "d7", "short": "Dạng 7", "title": "Dạng 7 (nâng cao): Đặt ẩn phụ", "rule": "Biểu thức lặp lại → đặt là t, phân tích theo t, rồi THAY t TRỞ LẠI và phân tích tiếp. Tích 4 thừa số: ghép cặp có tổng hằng số bằng nhau.", "levels": [{"name": "Thông hiểu", "items": [{"type": "mc", "p": "(x² + 2x)² − 2(x² + 2x) − 3", "ok": "(x − 1)(x + 3)(x + 1)²", "wrong": [["(x² + 2x − 3)(x² + 2x + 1)", "trietde", "Thay t trở lại rồi còn phải phân tích tiếp hai ngoặc."], ["(x² + 2x + 3)(x² + 2x − 1)", "tichtong", "t² − 2t − 3: tích −3, tổng −2 → −3 và 1."], ["(x + 1)(x − 3)(x + 1)²", "tichtong", "x² + 2x − 3 = (x − 1)(x + 3)."]], "sol": "t = x² + 2x: t² − 2t − 3 = (t − 3)(t + 1) = (x² + 2x − 3)(x² + 2x + 1) = (x − 1)(x + 3)(x + 1)².", "hint": null}, {"type": "fill", "p": "(x² + x)² + 4(x² + x) − 12", "tpl": "(x² + x ☐ 6)(x ☐ 1)(x ☐ 2)", "ans": ["+", "−", "+"], "alts": [], "sol": "t = x² + x: t² + 4t − 12 = (t + 6)(t − 2) = (x² + x + 6)(x − 1)(x + 2).", "tag": "tichtong", "hint": null}, {"type": "mc", "p": "(x + y)² − 2(x + y) − 8", "ok": "(x + y − 4)(x + y + 2)", "wrong": [["(x + y + 4)(x + y − 2)", "tichtong", "Tích −8, tổng −2 → −4 và 2."], ["(x + y − 4)(x − y + 2)", "ngoac", "t = x + y thay vào cả hai ngoặc."], ["(x + y − 8)(x + y + 1)", "tichtong", "Tích −8 nhưng tổng là −7."]], "sol": "t = x + y: t² − 2t − 8 = (t − 4)(t + 2).", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "mc", "p": "(x + 1)(x + 2)(x + 3)(x + 4) − 24", "ok": "x(x + 5)(x² + 5x + 10)", "wrong": [["(x² + 5x)(x² + 5x + 10)", "trietde", "x² + 5x còn đặt được x ra ngoài."], ["x(x − 5)(x² + 5x + 10)", "giudau", "x² + 5x = x(x + 5)."], ["(x² + 5x − 1)(x² + 5x + 11)", "tichtong", "Đặt t = x² + 5x + 5 thì được t² − 1 − 24 = t² − 25."]], "sol": "(x² + 5x + 4)(x² + 5x + 6) − 24; t = x² + 5x + 5 → t² − 25 = (t − 5)(t + 5) = (x² + 5x)(x² + 5x + 10).", "hint": null}, {"type": "fill", "p": "x(x + 2)(x + 4)(x + 6) + 15", "tpl": "(x² + 6x + ☐)(x + ☐)(x + ☐)", "ans": ["3", "1", "5"], "alts": [["3", "5", "1"]], "sol": "(x² + 6x)(x² + 6x + 8) + 15; t = x² + 6x + 4 → t² − 1 = (x² + 6x + 3)(x² + 6x + 5) = (x² + 6x + 3)(x + 1)(x + 5).", "tag": "tichtong", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "(x² + x)² − 5(x² + x) + 6", "steps": [["Đặt t = x² + x, được t² − 5t + 6", "t² − 5t + 6"], ["= (t − 2)(t − 3)", "(t − 2)(t − 3)"], ["= (x² + x + 2)(x² + x + 3)", "(x² + x + 2)(x² + x + 3)"]], "wrong": 2, "fixes": [["= (x² + x − 2)(x² + x − 3)", true], ["= (x² − x − 2)(x² − x − 3)", false], ["= (x² + x − 2)(x² + x + 3)", false]], "sol": "Thay t trở lại giữ nguyên dấu: (x² + x − 2)(x² + x − 3) = (x − 1)(x + 2)(x² + x − 3).", "tag": "ngoac"}]}]}, {"id": "d8", "short": "Dạng 8", "title": "Dạng 8 (nâng cao): Hệ số bất định, đa thức nhiều biến", "rule": "Hệ số bất định: giả sử bằng tích hai đa thức, nhân ra rồi đồng nhất hệ số. Nếu a + b + c = 0 thì a³ + b³ + c³ = 3abc.", "levels": [{"name": "Thông hiểu", "items": [{"type": "mc", "p": "x⁴ − 2x³ + 2x² − 3x + 6", "ok": "(x² + x + 2)(x² − 3x + 3)", "wrong": [["(x² − x + 2)(x² + 3x + 3)", "heso", "Hệ số x³: −1 + 3 = 2, khác −2."], ["(x² + x + 3)(x² − 3x + 2)", "heso", "Hệ số x: 1·2 + 3·(−3) = −7, khác −3."], ["(x² + x − 2)(x² − 3x − 3)", "heso", "Hệ số tự do: (−2)(−3) = 6 đúng, nhưng hệ số x²: −3 − 3 − 2 = −8."]], "sol": "Giả sử (x² + ax + b)(x² + cx + d), bd = 6. Thử b = 2, d = 3: a + c = −2, ac + 5 = 2, 3a + 2c = −3 → a = 1, c = −3.", "hint": null}, {"type": "mc", "p": "a(b² − c²) + b(c² − a²) + c(a² − b²)", "ok": "(a − b)(b − c)(c − a)", "wrong": [["−(a − b)(b − c)(c − a)", "doidau", "Thử a = 0, b = 1, c = 2: đề = 0 + 1·4 + 2·(−1) = 2; (a − b)(b − c)(c − a) = (−1)(−1)(2) = 2."], ["(a − b)(b − c)(a + c)", "khac", "Đề bằng 0 khi c = a, nên phải có nhân tử (c − a)."], ["(a + b)(b + c)(c + a)", "khac", "Đề bằng 0 khi a = b, nên phải có nhân tử (a − b)."]], "sol": "Thay a = b thì đề bằng 0 → có (a − b); tương tự (b − c), (c − a). Thử một bộ số để tìm dấu: hệ số bằng 1.", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "mc", "p": "x³ − 8y³ − 1 − 6xy", "ok": "(x − 2y − 1)(x² + 4y² + 2xy + x − 2y + 1)", "wrong": [["(x − 2y − 1)(x² + 4y² − 2xy − x + 2y + 1)", "ngoac", "−ab = −x·(−2y) = +2xy; −ca = −(−1)·x = +x."], ["(x − 2y − 1)(x² + 4y² + 2xy + x + 2y + 1)", "ngoac", "−bc = −(−2y)(−1) = −2y."], ["(x + 2y + 1)(x² + 4y² + 2xy − x + 2y + 1)", "doidau", "a + b + c = x + (−2y) + (−1) = x − 2y − 1."]], "sol": "a = x, b = −2y, c = −1: a³ + b³ + c³ − 3abc = (a + b + c)(a² + b² + c² − ab − bc − ca).", "hint": null}, {"type": "fill", "p": "2x² + 3xy − 2y² + x + 7y − 3", "tpl": "(2x ☐ y ☐ 3)(x ☐ 2y ☐ 1)", "ans": ["−", "+", "+", "−"], "alts": [], "sol": "2x² + 3xy − 2y² = (2x − y)(x + 2y). Giả sử (2x − y + m)(x + 2y + n), đồng nhất hệ số: m = 3, n = −1.", "tag": "heso", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "(2x − 1)³ + (3 − x)³ − (x + 2)³", "steps": [["Đặt a = 2x − 1, b = 3 − x, c = −(x + 2); có a + b + c = 0.", null], ["Nên tổng = 3abc = 3(2x − 1)(3 − x)(−x − 2)", "3(2x − 1)(3 − x)(−x − 2)"], ["= −3(2x − 1)(x − 3)(x + 2)", "−3(2x − 1)(x − 3)(x + 2)"]], "wrong": 2, "fixes": [["= 3(2x − 1)(x − 3)(x + 2)", true], ["= −3(2x − 1)(x + 3)(x + 2)", false], ["= 3(2x − 1)(x + 3)(x − 2)", false]], "sol": "(3 − x)(−x − 2) = [−(x − 3)]·[−(x + 2)]: đổi dấu 2 thừa số thì tích không đổi dấu.", "tag": "doidau"}]}]}, {"id": "d9", "short": "Dạng 9", "title": "Dạng 9: Ứng dụng – tìm x, tính nhanh", "rule": "Chuyển hết về một vế = 0 → phân tích thành tích → cho từng thừa số = 0. Không chia hai vế cho biểu thức chứa x.", "levels": [{"name": "Nhận biết", "items": [{"type": "solve", "p": "3x² − 12x = 0", "roots": ["0", "4"], "sol": "3x(x − 4) = 0 → x = 0 hoặc x = 4.", "tag": "chia", "hint": null}, {"type": "solve", "p": "4x² − 25 = 0", "roots": ["5/2", "-5/2"], "sol": "(2x − 5)(2x + 5) = 0 → x = 5/2 hoặc x = −5/2.", "tag": "chuyenve", "hint": null}, {"type": "solve", "p": "(x + 3)(2x − 1) = 0", "roots": ["-3", "1/2"], "sol": "x + 3 = 0 → x = −3; 2x − 1 = 0 → x = 1/2.", "tag": "chuyenve", "hint": null}, {"type": "solve", "p": "x² − 8x + 16 = 0", "roots": ["4"], "sol": "(x − 4)² = 0 → x = 4.", "tag": "hdt", "hint": null}]}, {"name": "Thông hiểu", "items": [{"type": "solve", "p": "x(x + 4) = 5(x + 4)", "roots": ["5", "-4"], "sol": "x(x + 4) − 5(x + 4) = 0 → (x + 4)(x − 5) = 0 → x = −4 hoặc x = 5. Chia hai vế cho (x + 4) sẽ mất nghiệm x = −4.", "tag": "chia", "hint": null}, {"type": "solve", "p": "(2x − 1)² = (x + 3)²", "roots": ["4", "-2/3"], "sol": "(2x − 1 − x − 3)(2x − 1 + x + 3) = 0 → (x − 4)(3x + 2) = 0 → x = 4 hoặc x = −2/3.", "tag": "ngoac", "hint": null}, {"type": "solve", "p": "x³ − 9x = 0", "roots": ["0", "3", "-3"], "sol": "x(x − 3)(x + 3) = 0 → x = 0, 3, −3. Chia cho x sẽ mất nghiệm x = 0.", "tag": "chia", "hint": null}, {"type": "solve", "p": "x² − 5x − 6 = 0", "roots": ["6", "-1"], "sol": "Tích −6, tổng −5 → (x − 6)(x + 1) = 0 → x = 6 hoặc x = −1.", "tag": "tichtong", "hint": null}]}, {"name": "Vận dụng", "items": [{"type": "solve", "p": "2x³ − x² − 8x + 4 = 0", "roots": ["1/2", "2", "-2"], "sol": "x²(2x − 1) − 4(2x − 1) = (2x − 1)(x − 2)(x + 2) = 0.", "tag": "ngoac", "hint": null}, {"type": "num", "p": "Tính nhanh: 73² + 54·73 + 27²", "ans": "10000", "sol": "= 73² + 2·73·27 + 27² = (73 + 27)² = 100² = 10 000.", "tag": "hdt", "hint": null}, {"type": "num", "p": "Tính nhanh: 2027² − 2026·2028", "ans": "1", "sol": "2026·2028 = (2027 − 1)(2027 + 1) = 2027² − 1, nên kết quả = 1.", "tag": "hdt", "hint": null}]}, {"name": "Soi lỗi", "items": [{"type": "spot", "p": "Tìm x: x(x − 3) = 2(x − 3)", "steps": [["Chia hai vế cho (x − 3): x = 2", null], ["Vậy x = 2.", null]], "wrong": 0, "fixes": [["Chuyển vế: x(x − 3) − 2(x − 3) = 0 ⇒ (x − 3)(x − 2) = 0", true], ["Chia hai vế cho x: x − 3 = 2", false], ["Chuyển vế: x(x − 3) − 2(x − 3) = 0 ⇒ (x − 3)(x + 2) = 0", false]], "sol": "Chia cho (x − 3) làm mất nghiệm x = 3. Đáp số đúng: x = 3 hoặc x = 2.", "tag": "chia"}, {"type": "spot", "p": "Tìm x: x² − 6x + 9 − 4(x − 3) = 0", "steps": [["(x − 3)² − 4(x − 3) = 0", null], ["(x − 3)(x − 3 − 4) = 0 ⇒ (x − 3)(x − 7) = 0", null], ["⇒ x = 3 hoặc x = −7", null]], "wrong": 2, "fixes": [["⇒ x = 3 hoặc x = 7", true], ["⇒ x = −3 hoặc x = 7", false], ["⇒ x = −3 hoặc x = −7", false]], "sol": "x − 7 = 0 ⇒ x = 7 (chuyển −7 sang vế phải thành +7).", "tag": "chuyenve"}]}]}, {"id": "mix", "short": "Trộn dạng", "title": "Trộn dạng (như đề kiểm tra)", "rule": "Đề không ghi dạng. Tự chọn phương pháp: nhân tử chung → hằng đẳng thức → nhóm → tách. Xong thì thay x = 1 hoặc 2 để tự kiểm tra.", "levels": [{"name": "Tổng hợp", "items": [{"type": "mc", "p": "4x² − 4x + 1 − 9y²", "ok": "(2x − 3y − 1)(2x + 3y − 1)", "wrong": [["(2x − 3y + 1)(2x + 3y + 1)", "hdt", "4x² − 4x + 1 = (2x − 1)², không phải (2x + 1)²."], ["(2x − 3y − 1)(2x + 3y + 1)", "ngoac", "A = 2x − 1 giữ nguyên trong cả hai ngoặc."], ["(2x − 1)² − 9y²", "trietde", "Còn hiệu hai bình phương, chưa thành tích."]], "sol": "Nhóm + hằng đẳng thức: (2x − 1)² − (3y)² = (2x − 1 − 3y)(2x − 1 + 3y).", "hint": null}, {"type": "mc", "p": "x³ + 27", "ok": "(x + 3)(x² − 3x + 9)", "wrong": [["(x + 3)(x² + 3x + 9)", "hdt", "A³ + B³ = (A + B)(A² − AB + B²): dấu giữa là trừ."], ["(x + 3)(x² − 6x + 9)", "hdt", "Hạng tử giữa là AB = 3x."], ["(x + 3)³", "hdt", "(x + 3)³ = x³ + 9x² + 27x + 27."]], "sol": "Hằng đẳng thức: x³ + 3³ = (x + 3)(x² − 3x + 9).", "hint": null}, {"type": "fill", "p": "6x² − 7x − 3", "tpl": "(2x ☐ 3)(3x ☐ 1)", "ans": ["−", "+"], "alts": [], "sol": "Tách: a·c = −18, tổng −7 → −9 và 2: 3x(2x − 3) + (2x − 3) = (2x − 3)(3x + 1).", "tag": "tichtong", "hint": null}, {"type": "mc", "p": "5x(2 − x) − 3(x − 2)²", "ok": "2(2 − x)(4x − 3)", "wrong": [["2(2 − x)(x + 3)", "luythua", "(x − 2)² = (2 − x)², không đổi dấu khi đổi chỗ trong bình phương."], ["2(2 − x)(x − 3)", "ngoac", "5x − 3(2 − x) = 5x − 6 + 3x = 8x − 6."], ["(2 − x)(8x − 6)", "trietde", "8x − 6 còn đặt được 2 ra ngoài."]], "sol": "(x − 2)² = (2 − x)² → (2 − x)[5x − 3(2 − x)] = (2 − x)(8x − 6) = 2(2 − x)(4x − 3).", "hint": null}, {"type": "mc", "p": "x² − y² + 4x + 4", "ok": "(x − y + 2)(x + y + 2)", "wrong": [["(x − y − 2)(x + y + 2)", "ngoac", "A = x + 2 giữ nguyên trong cả hai ngoặc."], ["(x − y + 2)(x + y − 2)", "ngoac", "A = x + 2 giữ nguyên trong cả hai ngoặc."], ["(x − y)(x + y) + 4(x + 1)", "trietde", "Đây chưa phải là tích."]], "sol": "Nhóm: (x² + 4x + 4) − y² = (x + 2)² − y².", "hint": null}, {"type": "mc", "p": "x⁴ − 5x² + 4", "ok": "(x − 1)(x + 1)(x − 2)(x + 2)", "wrong": [["(x² − 1)(x² − 4)", "trietde", "Hai ngoặc còn là hiệu hai bình phương."], ["(x² + 1)(x² + 4)", "tichtong", "Tích 4, tổng −5 → −1 và −4."], ["(x − 1)²(x − 2)²", "hdt", "Khai triển có hạng tử bậc ba, khác đề."]], "sol": "Đặt t = x² (hoặc tách −5x² = −x² − 4x²): (x² − 1)(x² − 4).", "hint": null}, {"type": "fill", "p": "2x³ + 4x² − 2x − 4", "tpl": "2(x ☐ 2)(x ☐ 1)(x ☐ 1)", "ans": ["+", "−", "+"], "alts": [["+", "+", "−"]], "sol": "Phối hợp: 2(x³ + 2x² − x − 2) = 2(x + 2)(x² − 1) = 2(x + 2)(x − 1)(x + 1).", "tag": "ngoac", "hint": null}, {"type": "mc", "p": "(x − 1)³ + (1 − x)²", "ok": "x(x − 1)²", "wrong": [["(x − 1)²(x − 2)", "luythua", "(1 − x)² = (x − 1)², không phải −(x − 1)²."], ["−x(x − 1)²", "luythua", "Bình phương không mang dấu trừ ra ngoài."], ["(x − 1)³", "so1", "(x − 1)²(x − 1) + (x − 1)²·1: còn số 1."]], "sol": "(1 − x)² = (x − 1)² → (x − 1)²[(x − 1) + 1] = x(x − 1)².", "hint": null}]}]}], "tags": {"ngoac": "Quên đổi dấu khi bỏ/thêm ngoặc có dấu trừ phía trước", "giudau": "Tự đổi dấu hạng tử khi đưa vào ngoặc (phải giữ nguyên dấu)", "doidau": "Đổi dấu thừa số: y − x = −(x − y)", "luythua": "Dấu của lũy thừa: (y − x)² = (x − y)², nhưng (y − x)³ = −(x − y)³", "so1": "Quên số 1 khi cả hạng tử là nhân tử chung", "hdt": "Nhầm dấu trong hằng đẳng thức", "tichtong": "Chọn sai dấu cặp số (tích – tổng) khi tách hạng tử", "chuyenve": "Chuyển vế / giải nghiệm sai dấu", "chia": "Chia hai vế cho biểu thức chứa x nên mất nghiệm", "trietde": "Chưa phân tích triệt để", "chung": "Chia sai hoặc nhân nhầm khi đặt nhân tử chung", "nhom": "Nhóm sai nên các nhóm không có nhân tử chung", "thembot": "Thêm vào mà quên bớt đi (hoặc ngược lại)", "heso": "Đồng nhất hệ số sai dấu", "khac": "Nhận dạng sai nhân tử"}, "signTags": ["ngoac", "giudau", "doidau", "luythua", "so1", "hdt", "tichtong", "chuyenve", "heso"]}</script>
+<script>
+(function(){
+const DATA = JSON.parse(document.getElementById('bank').textContent);
+const SECS = DATA.sections, TAGS = DATA.tags, SIGN = new Set(DATA.signTags);
+const KEY = 'pt8-luyen-v1';
+let S = {};
+try { S = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) { S = {}; }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LETTERS = 'ABCD';
+// assign ids
+const ITEMS = [];
+SECS.forEach(sec => { let n = 0; sec.levels.forEach(lv => lv.items.forEach(it => { n++; it.id = sec.id + '-' + n; it.n = n; it.sec = sec; ITEMS.push(it); })); sec.count = n; });
+
+function hash(s){ let h = 2166136261; for (const ch of s){ h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function shuffled(arr, seed){ const a = arr.slice(); let h = hash(seed) || 1; for (let i = a.length - 1; i > 0; i--){ h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0; h = (h ^ (h >>> 13)) >>> 0; const j = h % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function secScore(sec){ let done = 0, ok = 0; ITEMS.filter(i => i.sec === sec).forEach(i => { const r = S[i.id]; if (r && r.done){ done++; if (r.ok) ok++; } }); return {done, ok, total: sec.count}; }
+function totalScore(){ let done = 0, ok = 0; ITEMS.forEach(i => { const r = S[i.id]; if (r && r.done){ done++; if (r.ok) ok++; } }); return {done, ok, total: ITEMS.length}; }
+
+function record(it, ok, tag, extra){ S[it.id] = Object.assign({done: true, ok, tag: ok ? null : tag}, extra || {}); save(); renderItem(it); renderChrome(); }
+
+// ---------- parsing answers
+function normSign(s){ return s.replace(/[−–]/g, '-'); }
+function parseNum(s){
+  s = normSign(String(s)).trim().replace(/^x\s*=\s*/i, '').replace(/\s+/g, '').replace(',', '.');
+  if (!s) return NaN;
+  const m = s.match(/^(-?)(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/);
+  if (m) return (m[1] ? -1 : 1) * parseFloat(m[2]) / parseFloat(m[3]);
+  if (!/^-?\d+(\.\d+)?$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+const near = (a, b) => Math.abs(a - b) < 1e-9;
+
+// ---------- prompt split
+function splitPrompt(p){
+  let challenge = false;
+  if (p.includes('(Thử thách)')){ challenge = true; p = p.replace('(Thử thách)', '').trim(); }
+  let label = '', expr = p;
+  const i = p.indexOf(':');
+  if (i > -1){ label = p.slice(0, i).trim(); expr = p.slice(i + 1).trim(); }
+  return {label, expr, challenge};
+}
+const DEFAULT_ASK = {mc: 'Phân tích thành nhân tử', fill: 'Phân tích thành nhân tử, điền vào ô trống', solve: 'Tìm x', num: 'Tính nhanh', spot: 'Lời giải dưới đây có một bước sai dấu. Bấm vào bước sai đầu tiên', tf: 'Đúng hay sai?'};
+
+function feedback(ok, why, sol, tag){
+  const v = ok ? 'Đúng rồi!' : 'Chưa đúng';
+  return `<div class="fb ${ok ? 'ok' : ''}" role="status"><div class="v">${v}</div>${why ? `<div class="why">${esc(why)}</div>` : ''}<div class="sol"><b>Lời giải:</b> ${esc(sol)}</div>${!ok && tag && TAGS[tag] ? `<span class="err">Lỗi: ${esc(TAGS[tag])}</span>` : ''}</div>`;
+}
+
+// ---------- item renderers
+function itemShell(it, inner){
+  const r = S[it.id];
+  const mark = r && r.done ? `<span class="mark ${r.ok ? 'ok' : 'no'}" aria-label="${r.ok ? 'đúng' : 'sai'}">${r.ok ? '✓' : '✗'}</span>` : '';
+  return `<div class="num"><small>Câu</small>${it.n}${mark}</div><div class="body">${inner}</div>`;
+}
+
+function renderMC(it){
+  const r = S[it.id] || {};
+  const {label, expr, challenge} = splitPrompt(it.p || '');
+  let opts;
+  if (it.type === 'tf') opts = [{t: 'Đúng', ok: it.truth}, {t: 'Sai', ok: !it.truth}];
+  else opts = shuffled([{t: it.ok, ok: true}].concat(it.wrong.map(w => ({t: w[0], ok: false, tag: w[1], why: w[2]}))), it.id);
+  const ask = it.type === 'tf' ? DEFAULT_ASK.tf : (label || DEFAULT_ASK.mc);
+  const shown = it.type === 'tf' ? `${esc(it.lhs)} = ${esc(it.rhs)}` : esc(expr);
+  let html = `<div class="ask">${esc(ask)}${challenge ? '<span class="badge">Thử thách</span>' : ''}</div><div class="math expr">${shown}</div><div class="opts">`;
+  opts.forEach((o, k) => {
+    let cls = 'opt' + (it.type === 'tf' ? ' text' : '');
+    if (r.done){ if (o.ok) cls += ' right'; else if (r.pick === o.t) cls += ' wrong'; }
+    html += `<button class="${cls}" data-k="${k}" ${r.done ? 'disabled' : ''}><span class="k">${it.type === 'tf' ? '' : LETTERS[k]}</span><span class="${it.type === 'tf' ? '' : 'math'}">${esc(o.t)}</span></button>`;
+  });
+  html += '</div>';
+  if (r.done){
+    const picked = opts.find(o => o.t === r.pick) || {};
+    html += feedback(r.ok, r.ok ? '' : picked.why, it.sol, r.tag);
+  }
+  const el = document.getElementById(it.id);
+  el.innerHTML = itemShell(it, html);
+  if (!r.done) el.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    const o = opts[+b.dataset.k];
+    record(it, o.ok, it.type === 'tf' ? it.tag : o.tag, {pick: o.t});
+  }));
+}
+
+function renderFill(it){
+  const r = S[it.id] || {};
+  const {label, expr} = splitPrompt(it.p);
+  const tplHasEq = it.tpl.includes('=');
+  const parts = it.tpl.split('☐');
+  const vals = r.vals || [];
+  let row = '';
+  parts.forEach((txt, i) => {
+    row += `<span>${esc(txt)}</span>`;
+    if (i < parts.length - 1){
+      const isSign = it.ans[i] === '+' || it.ans[i] === '−';
+      let st = '';
+      if (r.done){ st = r.blankOk && r.blankOk[i] ? ' right' : ' wrong'; }
+      if (isSign){
+        const v = vals[i] || '';
+        row += `<button class="sign${v ? '' : ' empty'}${st}" data-i="${i}" aria-label="Chọn dấu ô ${i + 1}" ${r.done ? 'disabled' : ''}>${v || '?'}</button>`;
+      } else {
+        row += `<input class="blank${st}" id="${it.id}-b${i}" data-i="${i}" inputmode="numeric" autocomplete="off" aria-label="Ô ${i + 1}" value="${esc(vals[i] || '')}" ${r.done ? 'disabled' : ''}>`;
+      }
+    }
+  });
+  let html = `<div class="ask">${esc(label && tplHasEq ? label : DEFAULT_ASK.fill)}</div>`;
+  if (!tplHasEq) html += `<div class="math expr">${esc(expr)} =</div>`;
+  html += `<div class="fillrow">${row}</div>`;
+  if (!r.done) html += `<div class="actions"><button class="btn" data-check>Kiểm tra</button><span class="tip">Bấm vào ô <b>?</b> để đổi dấu + / −</span></div>`;
+  else html += feedback(r.ok, r.ok ? '' : 'Đáp án đúng: ' + fillText(it, it.ans), it.sol, r.tag);
+  const el = document.getElementById(it.id);
+  el.innerHTML = itemShell(it, html);
+  if (r.done) return;
+  const cur = vals.slice();
+  el.querySelectorAll('.sign').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.i; cur[i] = cur[i] === '+' ? '−' : '+'; b.textContent = cur[i]; b.classList.remove('empty');
+  }));
+  el.querySelectorAll('.blank').forEach(inp => inp.addEventListener('input', () => { cur[+inp.dataset.i] = inp.value; }));
+  el.querySelector('[data-check]').addEventListener('click', () => {
+    const n = it.ans.length;
+    for (let i = 0; i < n; i++) if (!cur[i] || !String(cur[i]).trim()) { const t = el.querySelector('.tip'); t.textContent = 'Em điền hết các ô rồi bấm Kiểm tra nhé.'; t.style.color = 'var(--red)'; return; }
+    const clean = cur.map(v => normSign(String(v)).trim());
+    const lists = [it.ans].concat(it.alts);
+    const match = lists.find(L => L.every((v, i) => normSign(v) === clean[i]));
+    const ref = match || lists[0];
+    const blankOk = ref.map((v, i) => normSign(v) === clean[i]);
+    record(it, !!match, it.tag, {vals: cur.slice(0, n), blankOk});
+  });
+}
+function fillText(it, ans){ const p = it.tpl.split('☐'); let s = ''; p.forEach((t, i) => { s += t; if (i < p.length - 1) s += ans[i]; }); return s; }
+
+function renderSolve(it){
+  const r = S[it.id] || {};
+  const isNum = it.type === 'num';
+  const {label, expr} = splitPrompt(it.p);
+  const n = isNum ? 1 : it.roots.length;
+  const vals = r.vals || [];
+  let html = `<div class="ask">${esc(isNum ? (label || DEFAULT_ASK.num) : DEFAULT_ASK.solve)}${isNum ? '' : ` · phương trình có ${n} nghiệm`}</div><div class="math expr">${esc(isNum ? expr : it.p)}</div><div class="roots">`;
+  for (let i = 0; i < n; i++){
+    let st = r.done ? (r.okEach && r.okEach[i] ? ' right' : ' wrong') : '';
+    html += `<label>${isNum ? '=' : 'x =' }<input class="blank${st}" id="${it.id}-r${i}" data-i="${i}" inputmode="text" autocomplete="off" value="${esc(vals[i] || '')}" ${r.done ? 'disabled' : ''} aria-label="${isNum ? 'Kết quả' : 'Nghiệm ' + (i + 1)}"></label>`;
+  }
+  html += '</div>';
+  if (!r.done) html += `<div class="actions"><button class="btn" data-check>Kiểm tra</button><span class="tip">${isNum ? 'Nhập số, ví dụ 4900' : 'Phân số viết 5/2, số âm viết −3'}</span></div>`;
+  else html += feedback(r.ok, r.ok ? '' : 'Đáp án đúng: ' + (isNum ? it.ans : it.roots.map(v => 'x = ' + v.replace('-', '−')).join('; ')), it.sol, r.tag);
+  const el = document.getElementById(it.id);
+  el.innerHTML = itemShell(it, html);
+  if (r.done) return;
+  el.querySelector('[data-check]').addEventListener('click', () => {
+    const inputs = [...el.querySelectorAll('input')];
+    const raw = inputs.map(i => i.value);
+    const tip = el.querySelector('.tip');
+    if (isNum){
+      const v = parseInt(raw[0].replace(/[\s.,]/g, ''), 10);
+      if (isNaN(v)){ tip.textContent = 'Em nhập một số nhé.'; tip.style.color = 'var(--red)'; return; }
+      const ok = v === parseInt(it.ans, 10);
+      record(it, ok, it.tag, {vals: raw, okEach: [ok]});
+      return;
+    }
+    const nums = raw.map(parseNum);
+    if (nums.some(isNaN)){ tip.textContent = 'Có ô chưa điền hoặc viết chưa đúng. Ví dụ: 3, −2, 5/2.'; tip.style.color = 'var(--red)'; return; }
+    const want = it.roots.map(parseNum); const used = want.map(() => false);
+    const okEach = nums.map(v => { const j = want.findIndex((w, k) => !used[k] && near(w, v)); if (j > -1){ used[j] = true; return true; } return false; });
+    record(it, okEach.every(Boolean), it.tag, {vals: raw, okEach});
+  });
+}
+
+function renderSpot(it){
+  const r = S[it.id] || {};
+  const {label, expr} = splitPrompt(it.p);
+  const isEq = it.p.startsWith('Tìm x');
+  let html = `<div class="ask">${esc(DEFAULT_ASK.spot)}</div><div class="math expr">${isEq ? esc(label + ': ' + expr) : esc(expr)}</div><div class="steps">`;
+  it.steps.forEach((s, k) => {
+    let cls = 'step' + (s[1] ? '' : ' txt');
+    if (r.stepPick !== undefined){ if (k === r.stepPick) cls += k === it.wrong ? ' right' : ' wrong'; else if (k === it.wrong) cls += ' truth'; }
+    html += `<button class="${cls}" data-k="${k}" ${r.stepPick !== undefined ? 'disabled' : ''}><span class="k">Bước ${k + 1}</span><span class="math">${esc(s[0])}</span></button>`;
+  });
+  html += '</div>';
+  const fixes = shuffled(it.fixes.map(f => ({t: f[0], ok: f[1]})), it.id + 'f');
+  if (r.stepPick !== undefined){
+    const stepOk = r.stepPick === it.wrong;
+    html += `<div class="fixq">${stepOk ? 'Đúng, bước ' + (it.wrong + 1) + ' sai.' : 'Bước sai đầu tiên là bước ' + (it.wrong + 1) + ' (viền đỏ nét đứt).'} Sửa lại bước ${it.wrong + 1} cho đúng:</div><div class="opts">`;
+    fixes.forEach((f, k) => {
+      let cls = 'opt' + (f.t.startsWith('=') ? '' : ' text');
+      if (r.done){ if (f.ok) cls += ' right'; else if (r.fixPick === f.t) cls += ' wrong'; }
+      html += `<button class="${cls}" data-f="${k}" ${r.done ? 'disabled' : ''}><span class="k">${LETTERS[k]}</span><span class="${f.t.startsWith('=') ? 'math' : ''}">${esc(f.t)}</span></button>`;
+    });
+    html += '</div>';
+  }
+  if (r.done) html += feedback(r.ok, r.ok ? '' : (r.stepPick !== it.wrong ? 'Em chọn chưa đúng bước sai.' : 'Em chọn chưa đúng cách sửa.'), it.sol, r.tag);
+  const el = document.getElementById(it.id);
+  el.innerHTML = itemShell(it, html);
+  if (r.stepPick === undefined){
+    el.querySelectorAll('.step').forEach(b => b.addEventListener('click', () => {
+      S[it.id] = {stepPick: +b.dataset.k}; save(); renderItem(it);
+    }));
+  } else if (!r.done){
+    el.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => {
+      const f = fixes[+b.dataset.f];
+      const ok = r.stepPick === it.wrong && f.ok;
+      record(it, ok, it.tag, {stepPick: r.stepPick, fixPick: f.t});
+    }));
+  }
+}
+
+function renderItem(it){
+  ({mc: renderMC, tf: renderMC, fill: renderFill, solve: renderSolve, num: renderSolve, spot: renderSpot})[it.type](it);
+}
+
+// ---------- views
+const LEVEL_DOTS = {'Nhận biết': '●○○', 'Thông hiểu': '●●○', 'Vận dụng': '●●●'};
+let current = null;
+
+function renderChrome(){
+  const t = totalScore();
+  document.getElementById('total').textContent = t.ok + '/' + t.total;
+  const tabs = SECS.map(sec => { const s = secScore(sec); return `<a class="tab${current === sec.id ? ' on' : ''}${s.done === s.total ? ' full' : ''}" href="#${sec.id}">${esc(sec.short)}<span class="p">${s.ok}/${s.total}</span></a>`; }).join('')
+    + `<a class="tab${current === 'ket-qua' ? ' on' : ''}" href="#ket-qua">Kết quả<span class="p">${t.done}/${t.total}</span></a>`;
+  const nav = document.getElementById('tabs');
+  const sl = nav.scrollLeft; nav.innerHTML = tabs; nav.scrollLeft = sl;
+  const head = document.getElementById('secmeta');
+  if (head && current !== 'ket-qua'){ const sec = SECS.find(s => s.id === current); const s = secScore(sec); head.textContent = `${s.total} câu · đã làm ${s.done} · đúng ${s.ok}`; }
+}
+
+function renderSection(sec){
+  const idx = SECS.indexOf(sec);
+  let html = `<div class="sec-head"><h2>${esc(sec.title)}</h2><div class="sec-meta" id="secmeta"></div></div><div class="rule"><b>Nhớ cách làm</b>${esc(sec.rule)}</div>`;
+  sec.levels.forEach(lv => {
+    html += `<section class="level"><div class="level-h">${esc(lv.name)}${LEVEL_DOTS[lv.name] ? ` <span class="dots" aria-hidden="true">${LEVEL_DOTS[lv.name]}</span>` : ''}</div>`;
+    lv.items.forEach(it => { html += `<div class="item" id="${it.id}"></div>`; });
+    html += '</section>';
+  });
+  const prev = idx > 0 ? SECS[idx - 1] : null, next = idx < SECS.length - 1 ? SECS[idx + 1] : null;
+  html += `<div class="pager">${prev ? `<a href="#${prev.id}">← ${esc(prev.short)}</a>` : '<span></span>'}${next ? `<a href="#${next.id}">${esc(next.short)} →</a>` : `<a href="#ket-qua">Xem kết quả →</a>`}</div>`;
+  html += `<div class="reset"><button class="btn ghost" id="resetSec">Làm lại ${esc(sec.short.toLowerCase())}</button></div>`;
+  const main = document.getElementById('main');
+  main.innerHTML = html;
+  ITEMS.filter(i => i.sec === sec).forEach(renderItem);
+  armReset(document.getElementById('resetSec'), () => { ITEMS.filter(i => i.sec === sec).forEach(i => delete S[i.id]); save(); renderSection(sec); renderChrome(); });
+}
+
+function armReset(btn, fn){
+  let armed = false, label = btn.textContent;
+  btn.addEventListener('click', () => {
+    if (!armed){ armed = true; btn.textContent = 'Bấm lần nữa để xoá bài đã làm'; setTimeout(() => { armed = false; btn.textContent = label; }, 4000); return; }
+    fn();
+  });
+}
+
+function renderResults(){
+  const t = totalScore();
+  const pct = t.done ? Math.round(100 * t.ok / t.done) : 0;
+  let msg;
+  if (!t.done) msg = 'Em chưa làm câu nào. Chọn một dạng ở thanh phía trên để bắt đầu, nên làm Khởi động trước.';
+  else if (t.done < t.total) msg = `Em đã làm ${t.done}/${t.total} câu, đúng ${t.ok} câu (${pct}% số câu đã làm). Làm tiếp các dạng còn lại nhé.`;
+  else msg = `Em đã làm hết ${t.total} câu, đúng ${t.ok} câu (${pct}%).`;
+  let rows = SECS.map(sec => { const s = secScore(sec); const w = s.total ? Math.round(100 * s.ok / s.total) : 0; return `<tr><td><a href="#${sec.id}">${esc(sec.short)}</a></td><td>${s.ok}/${s.total}</td><td>${s.done}/${s.total}</td><td><div class="bar" aria-hidden="true"><i style="width:${w}%"></i></div></td></tr>`; }).join('');
+  // error tally
+  const tally = {};
+  ITEMS.forEach(it => { const r = S[it.id]; if (r && r.done && !r.ok && r.tag){ (tally[r.tag] = tally[r.tag] || []).push(it); } });
+  const signList = Object.keys(tally).filter(k => SIGN.has(k)).sort((a, b) => tally[b].length - tally[a].length);
+  const otherList = Object.keys(tally).filter(k => !SIGN.has(k)).sort((a, b) => tally[b].length - tally[a].length);
+  const li = k => `<li><span class="c">${tally[k].length}</span><div><div class="l">${esc(TAGS[k])}</div><div class="w">Ở các câu: ${tally[k].map(it => `<a href="#${it.sec.id}" data-go="${it.id}">${esc(it.sec.short)} câu ${it.n}</a>`).join(', ')}</div></div></li>`;
+  let html = `<div class="sec-head"><h2>Kết quả</h2></div><div class="res-top"><div class="big">${t.ok}/${t.total}</div><p>${msg}</p></div>
+  <div class="tbl"><table><thead><tr><th>Dạng</th><th>Đúng</th><th>Đã làm</th><th>Tỉ lệ đúng</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <h3>Lỗi dấu em hay mắc nhất</h3>${signList.length ? `<ul class="errs">${signList.map(li).join('')}</ul>` : `<p class="empty">${t.done ? 'Chưa có lỗi dấu nào. Giỏi lắm!' : 'Làm bài xong, các lỗi dấu sẽ được thống kê ở đây.'}</p>`}
+  ${otherList.length ? `<h3>Lỗi khác</h3><ul class="errs">${otherList.map(li).join('')}</ul>` : ''}
+  <div class="reset"><button class="btn ghost" id="resetAll">Làm lại tất cả</button></div>`;
+  document.getElementById('main').innerHTML = html;
+  document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => { pendingScroll = a.dataset.go; }));
+  armReset(document.getElementById('resetAll'), () => { S = {}; save(); renderResults(); renderChrome(); });
+}
+
+let pendingScroll = null;
+function route(){
+  const h = (location.hash || '').slice(1);
+  const sec = SECS.find(s => s.id === h);
+  if (h === 'ket-qua'){ current = 'ket-qua'; renderResults(); }
+  else { current = (sec || SECS[0]).id; renderSection(sec || SECS[0]); }
+  renderChrome();
+  const tab = document.querySelector('.tab.on'); if (tab) tab.scrollIntoView({block: 'nearest', inline: 'center'});
+  if (pendingScroll){ const el = document.getElementById(pendingScroll); pendingScroll = null; if (el){ const y = el.getBoundingClientRect().top + window.scrollY - document.querySelector('.top').offsetHeight - 8; window.scrollTo(0, y); return; } }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+route();
+})();
+</script>
+
+</body></html>
